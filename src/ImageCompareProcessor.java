@@ -3,6 +3,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import static java.lang.System.arraycopy;
 
 class ImageCompareProcessor {
@@ -103,7 +105,7 @@ class ImageCompareProcessor {
         Integer coefficientProximityPointsInCloud = 1;
         Integer rangeCloud = averageMinimumDistance + (averageMinimumDistance - minimumDistance) * coefficientProximityPointsInCloud;
         for (int k = 0; k < distanceBetweenPoints.length - 1; k++) {
-            if (distanceBetweenPoints[idPoint][k] < rangeCloud && !massPointsDifference.get(k).equals(new Integer[]{0,0})) {
+            if (distanceBetweenPoints[idPoint][k] < rangeCloud && !Arrays.equals(massPointsDifference.get(k), new Integer[]{0, 0})) {
                 m.add(massPointsDifference.get(k));
                 massPointsDifference.set(k, new Integer[]{0, 0});
             }
