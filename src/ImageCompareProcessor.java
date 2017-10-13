@@ -11,16 +11,15 @@ public class ImageCompareProcessor {
     BufferedImage img1 = null;
     BufferedImage img2 = null;
     BufferedImage img3 = null;
-    ArrayList<Integer[]> masPoint = compare();
-    Integer[][] lengths = new Integer[masPoint.size()][masPoint.size()];
-    Integer rs;
-    Integer rmin;
-    Integer k = 1;
-    Integer rg = null;
+    ArrayList<Integer[]> massPointsDifference = compare();
+    Integer[][] distanceBetweenPoints = new Integer[massPointsDifference.size()][massPointsDifference.size()];
+    Integer averageMinimumDistance;
+    Integer minimumDistance;
+    Integer coefficienProximityPointsInCloud = 1;
+    Integer rangeCloud = null;
     ArrayList<ArrayList<Integer[]>> group = new ArrayList<>();
 
-    ArrayList<Integer[]> compare() {
-        ArrayList<Integer[]> masPoin = new ArrayList<>();
+    void loadImg (){
         try {
             img1 = ImageIO.read(new File("1.png"));
             img2 = ImageIO.read(new File("2.png"));
@@ -29,7 +28,13 @@ public class ImageCompareProcessor {
             System.out.println("Error reading file!");
         }
         img3 = img1;
+    }
+    void compareSize(){
 
+    }
+    ArrayList<Integer[]> compare() {
+        ArrayList<Integer[]> masPoin = new ArrayList<>();
+        loadImg();
         int width1 = img1.getWidth();
         int width2 = img2.getWidth();
         int height1 = img1.getHeight();
@@ -38,7 +43,6 @@ public class ImageCompareProcessor {
             System.err.println("Error: Images dimensions mismatch");
             System.exit(1);
         }
-
         for (int y = 0; y < height1; y++) {
             for (int x = 0; x < width1; x++) {
                 int rgb1 = img1.getRGB(x, y);
@@ -52,26 +56,21 @@ public class ImageCompareProcessor {
                 }
             }
         }
-
-        for (int i = 0; i < masPoin.size() - 1; i++) {
-            Integer[] p = new Integer[2];
-            arraycopy(masPoin.get(i), 0, p, 0, 2);
-        }
         return masPoin;
     }
 
     void countRminRs() {
         Integer[] p1 = new Integer[2];
         Integer[] p2 = new Integer[2];
-        Integer[][] length = new Integer[masPoint.size()][masPoint.size()];
+        Integer[][] length = new Integer[massPointsDifference.size()][massPointsDifference.size()];
         Integer[] minLengths = new Integer[length.length];
         Integer sum = 0;
-        for (int i = 0; i < masPoint.size(); i++) {
-            arraycopy(masPoint.get(i), 0, p1, 0, 2);
-            for (int j = 0; j < masPoint.size(); j++) {
-                arraycopy(masPoint.get(j), 0, p2, 0, 2);
+        for (int i = 0; i < massPointsDifference.size(); i++) {
+            arraycopy(massPointsDifference.get(i), 0, p1, 0, 2);
+            for (int j = 0; j < massPointsDifference.size(); j++) {
+                arraycopy(massPointsDifference.get(j), 0, p2, 0, 2);
                 length[i][j] = (int) Math.pow((p1[0] - p2[0]), 2) + (int) Math.pow((p1[1] - p2[1]), 2);
-                lengths[i][j] = (int) Math.pow((p1[0] - p2[0]), 2) + (int) Math.pow((p1[1] - p2[1]), 2);
+                distanceBetweenPoints[i][j] = (int) Math.pow((p1[0] - p2[0]), 2) + (int) Math.pow((p1[1] - p2[1]), 2);
             }
         }
 
@@ -91,7 +90,7 @@ public class ImageCompareProcessor {
         for (int k = 0; k < length.length - 1; k++) {
             sum = sum + length[k][1];
         }
-        rs = (int) Math.ceil(sum / length.length);
+        averageMinimumDistance = (int) Math.ceil(sum / length.length);
         for (int i = length.length - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
                 if (length[j][1] > length[j + 1][1]) {
@@ -101,28 +100,28 @@ public class ImageCompareProcessor {
                 }
             }
         }
-        rmin = length[0][1];
+        minimumDistance = length[0][1];
     }
 
     private void formGrup(int idPoint) {
         ArrayList<Integer[]> m = new ArrayList<>();
-        rg = rs + (rs - rmin) * k;
-        for (int k = 0; k < lengths.length - 1; k++) {
-            if (lengths[idPoint][k] < rg && !masPoint.get(k).equals(new Integer[]{0,0})) {
-                m.add(masPoint.get(k));
-                masPoint.set(k, new Integer[]{0, 0});
+        rangeCloud = averageMinimumDistance + (averageMinimumDistance - minimumDistance) * coefficienProximityPointsInCloud;
+        for (int k = 0; k < distanceBetweenPoints.length - 1; k++) {
+            if (distanceBetweenPoints[idPoint][k] < rangeCloud && !massPointsDifference.get(k).equals(new Integer[]{0,0})) {
+                m.add(massPointsDifference.get(k));
+                massPointsDifference.set(k, new Integer[]{0, 0});
             }
         }
         group.add(m);
     }
 
     void formAllGrup(){
-        for (int k =0; k<masPoint.size(); k++){
+        for (int k =0; k<massPointsDifference.size(); k++){
             formGrup(k);
         }
     }
 
-    void selectAnArea(){
+    void selectArea(){
         Integer[] point = new Integer[2];
         for(int k = 0; k < group.size();k++){
             int top = img3.getHeight() + 1;
