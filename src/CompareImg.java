@@ -57,7 +57,6 @@ public class CompareImg {
         for (int i = 0; i < masPoin.size() - 1; i++) {
             Integer[] p = new Integer[2];
             arraycopy(masPoin.get(i), 0, p, 0, 2);
-           // img3.setRGB(p[0], p[1], 255);
         }
         return masPoin;
     }
@@ -131,7 +130,7 @@ public class CompareImg {
             int right = 0;
             int bottom = 0;
             int left = img3.getWidth() + 1;
-            for (int i = 0; i < grupp.get(k).size();i++){//TUT NE RABOTAET
+            for (int i = 0; i < grupp.get(k).size();i++){
                point = grupp.get(k).get(i);
                if(point[1] <= top){
                    top = point[1];
