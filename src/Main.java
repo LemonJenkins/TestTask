@@ -8,7 +8,5 @@ public class Main {
         im.formAllGrup();
         im.selectAnArea();
 
-        System.out.println("22");
-
     }
 }

@@ -17,7 +17,7 @@ public class CompareImg {
     Integer[][] lengths = new Integer[masPoint.size()][masPoint.size()];
     Integer rs;
     Integer rmin;
-    Integer k = 2;
+    Integer k = 1;
     Integer rg = null;
     ArrayList<ArrayList<Integer[]>> grupp = new ArrayList<>();
 
@@ -110,7 +110,7 @@ public class CompareImg {
         ArrayList<Integer[]> m = new ArrayList<>();
         rg = rs + (rs - rmin) * k;
         for (int k = 0; k < lengths.length - 1; k++) {
-            if (lengths[idPoint][k] < rg && masPoint.get(k).equals(new Integer[]{0,0})) {
+            if (lengths[idPoint][k] < rg && !masPoint.get(k).equals(new Integer[]{0,0})) {
                 m.add(masPoint.get(k));
                 masPoint.set(k, new Integer[]{0, 0});
             }
@@ -125,14 +125,13 @@ public class CompareImg {
     }
 
     void selectAnArea(){
-        int top = img3.getHeight() + 1;
-        int right = -1;
-        int bottom = -1;
-        int left = img3.getWidth() + 1;
         Integer[] point = new Integer[2];
         for(int k = 0; k < grupp.size();k++){
+            int top = img3.getHeight() + 1;
+            int right = 0;
+            int bottom = 0;
+            int left = img3.getWidth() + 1;
             for (int i = 0; i < grupp.get(k).size();i++){//TUT NE RABOTAET
-                System.out.println(i);// u meny ne vivodit na ekran a doljen
                point = grupp.get(k).get(i);
                if(point[1] <= top){
                    top = point[1];
@@ -148,21 +147,18 @@ public class CompareImg {
                }
             }
             for (int i = left; i <= right; i++) {
-                System.out.println(i +"__"+top);
                 img3.setRGB(i, top, 255);
             }
             for (int i = left; i <= right; i++) {
-                System.out.println(i +"__"+top);
                 img3.setRGB(i, bottom, 255);
             }
             for (int i = top; i <= bottom; i++) {
-                System.out.println(i +"__"+top);
                 img3.setRGB(left, i, 255);
             }
             for (int i = top; i <= bottom; i++) {
-                System.out.println(i +"__"+top);
                 img3.setRGB(right, i, 255);
             }
+
 
         }
         try {
@@ -170,5 +166,6 @@ public class CompareImg {
             ImageIO.write(img3, "png", outputfile);
         } catch (IOException e) {
         }
+
     }
 }
