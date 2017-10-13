@@ -13,22 +13,11 @@ class ImageCompareProcessor {
     private BufferedImage img1 = null;
     private BufferedImage img2 = null;
     private BufferedImage img3 = null;
-    private ArrayList<Integer[]> massPointsDifference = compare();
-    private Integer[][] distanceBetweenPoints = new Integer[massPointsDifference.size()][massPointsDifference.size()];
+    private ArrayList<Integer[]> arrayPointsDifference = compare();
+    private Integer[][] distanceBetweenPoints = new Integer[arrayPointsDifference.size()][arrayPointsDifference.size()];
     private Integer averageMinimumDistance;
     private Integer minimumDistance;
     private ArrayList<ArrayList<Integer[]>> group = new ArrayList<>();
-
-    private void loadImg(){
-        try {
-            img1 = ImageIO.read(new File("1.png"));
-            img2 = ImageIO.read(new File("2.png"));
-
-        } catch (IOException e) {
-            System.out.println("Error reading file!");
-        }
-        img3 = img1;
-    }
 
     ArrayList<Integer[]> compare() {
         ArrayList<Integer[]> masPoin = new ArrayList<>();
@@ -57,15 +46,16 @@ class ImageCompareProcessor {
         return masPoin;
     }
 
+
     void countCoefficient() {
         Integer[] p1 = new Integer[2];
         Integer[] p2 = new Integer[2];
-        Integer[][] length = new Integer[massPointsDifference.size()][massPointsDifference.size()];
+        Integer[][] length = new Integer[arrayPointsDifference.size()][arrayPointsDifference.size()];
         Integer sum = 0;
-        for (int i = 0; i < massPointsDifference.size(); i++) {
-            arraycopy(massPointsDifference.get(i), 0, p1, 0, 2);
-            for (int j = 0; j < massPointsDifference.size(); j++) {
-                arraycopy(massPointsDifference.get(j), 0, p2, 0, 2);
+        for (int i = 0; i < arrayPointsDifference.size(); i++) {
+            arraycopy(arrayPointsDifference.get(i), 0, p1, 0, 2);
+            for (int j = 0; j < arrayPointsDifference.size(); j++) {
+                arraycopy(arrayPointsDifference.get(j), 0, p2, 0, 2);
                 length[i][j] = (int) Math.pow((p1[0] - p2[0]), 2) + (int) Math.pow((p1[1] - p2[1]), 2);
                 distanceBetweenPoints[i][j] = (int) Math.pow((p1[0] - p2[0]), 2) + (int) Math.pow((p1[1] - p2[1]), 2);
             }
@@ -100,26 +90,13 @@ class ImageCompareProcessor {
         minimumDistance = length[0][1];
     }
 
-    private void formGroup(int idPoint) {
-        ArrayList<Integer[]> m = new ArrayList<>();
-        Integer coefficientProximityPointsInCloud = 1;
-        Integer rangeCloud = averageMinimumDistance + (averageMinimumDistance - minimumDistance) * coefficientProximityPointsInCloud;
-        for (int k = 0; k < distanceBetweenPoints.length - 1; k++) {
-            if (distanceBetweenPoints[idPoint][k] < rangeCloud && !Arrays.equals(massPointsDifference.get(k), new Integer[]{0, 0})) {
-                m.add(massPointsDifference.get(k));
-                massPointsDifference.set(k, new Integer[]{0, 0});
-            }
-        }
-        group.add(m);
-    }
-
-    void formAllGroup(){
-        for (int k =0; k<massPointsDifference.size(); k++){
+    void formAllGroup() {
+        for (int k = 0; k < arrayPointsDifference.size(); k++) {
             formGroup(k);
         }
     }
 
-    void selectArea(){
+    void selectArea() {
         Integer[] point;
         for (ArrayList<Integer[]> aGroup : group) {
             int top = img3.getHeight() + 1;
@@ -164,4 +141,31 @@ class ImageCompareProcessor {
         }
 
     }
+
+
+    private void loadImg() {
+        try {
+            img1 = ImageIO.read(new File("1.png"));
+            img2 = ImageIO.read(new File("2.png"));
+
+        } catch (IOException e) {
+            System.out.println("Error reading file!");
+        }
+        img3 = img1;
+    }
+
+
+    private void formGroup(int idPoint) {
+        ArrayList<Integer[]> m = new ArrayList<>();
+        Integer coefficientProximityPointsInCloud = 1;
+        Integer rangeCloud = averageMinimumDistance + (averageMinimumDistance - minimumDistance) * coefficientProximityPointsInCloud;
+        for (int k = 0; k < distanceBetweenPoints.length - 1; k++) {
+            if (distanceBetweenPoints[idPoint][k] < rangeCloud && !Arrays.equals(arrayPointsDifference.get(k), new Integer[]{0, 0})) {
+                m.add(arrayPointsDifference.get(k));
+                arrayPointsDifference.set(k, new Integer[]{0, 0});
+            }
+        }
+        group.add(m);
+    }
+
 }
