@@ -131,7 +131,8 @@ public class CompareImg {
         int left = img3.getWidth() + 1;
         Integer[] point = new Integer[2];
         for(int k = 0; k < grupp.size();k++){
-            for (int i = 0; i < grupp.get(k).size();i++){
+            for (int i = 0; i < grupp.get(k).size();i++){//TUT NE RABOTAET
+                System.out.println(i);// u meny ne vivodit na ekran a doljen
                point = grupp.get(k).get(i);
                if(point[1] <= top){
                    top = point[1];
