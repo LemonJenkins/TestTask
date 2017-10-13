@@ -18,6 +18,7 @@ class ImageCompareProcessor {
     private Integer averageMinimumDistance;
     private Integer minimumDistance;
     private ArrayList<ArrayList<Integer[]>> group = new ArrayList<>();
+    private Integer borderColor = 255*65536+0*256+0;
 
     ArrayList<Integer[]> compare() {
         ArrayList<Integer[]> masPoin = new ArrayList<>();
@@ -47,7 +48,7 @@ class ImageCompareProcessor {
     }
 
 
-    void countCoefficient() {
+    public void countCoefficient() {
         Integer[] p1 = new Integer[2];
         Integer[] p2 = new Integer[2];
         Integer[][] length = new Integer[arrayPointsDifference.size()][arrayPointsDifference.size()];
@@ -90,13 +91,13 @@ class ImageCompareProcessor {
         minimumDistance = length[0][1];
     }
 
-    void formAllGroup() {
+    public void formAllGroup() {
         for (int k = 0; k < arrayPointsDifference.size(); k++) {
             formGroup(k);
         }
     }
 
-    void selectArea() {
+    public void selectArea() {
         Integer[] point;
         for (ArrayList<Integer[]> aGroup : group) {
             int top = img3.getHeight() + 1;
@@ -119,16 +120,16 @@ class ImageCompareProcessor {
                 }
             }
             for (int i = left; i <= right; i++) {
-                img3.setRGB(i, top, 255);
+                img3.setRGB(i, top, borderColor);
             }
             for (int i = left; i <= right; i++) {
-                img3.setRGB(i, bottom, 255);
+                img3.setRGB(i, bottom, borderColor);
             }
             for (int i = top; i <= bottom; i++) {
-                img3.setRGB(left, i, 255);
+                img3.setRGB(left, i, borderColor);
             }
             for (int i = top; i <= bottom; i++) {
-                img3.setRGB(right, i, 255);
+                img3.setRGB(right, i, borderColor);
             }
 
 
