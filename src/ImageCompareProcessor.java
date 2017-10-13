@@ -5,21 +5,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import static java.lang.System.arraycopy;
 
-public class ImageCompareProcessor {
+class ImageCompareProcessor {
 
 
-    BufferedImage img1 = null;
-    BufferedImage img2 = null;
-    BufferedImage img3 = null;
-    ArrayList<Integer[]> massPointsDifference = compare();
-    Integer[][] distanceBetweenPoints = new Integer[massPointsDifference.size()][massPointsDifference.size()];
-    Integer averageMinimumDistance;
-    Integer minimumDistance;
-    Integer coefficienProximityPointsInCloud = 1;
-    Integer rangeCloud = null;
-    ArrayList<ArrayList<Integer[]>> group = new ArrayList<>();
+    private BufferedImage img1 = null;
+    private BufferedImage img2 = null;
+    private BufferedImage img3 = null;
+    private ArrayList<Integer[]> massPointsDifference = compare();
+    private Integer[][] distanceBetweenPoints = new Integer[massPointsDifference.size()][massPointsDifference.size()];
+    private Integer averageMinimumDistance;
+    private Integer minimumDistance;
+    private ArrayList<ArrayList<Integer[]>> group = new ArrayList<>();
 
-    void loadImg (){
+    private void loadImg(){
         try {
             img1 = ImageIO.read(new File("1.png"));
             img2 = ImageIO.read(new File("2.png"));
@@ -29,9 +27,7 @@ public class ImageCompareProcessor {
         }
         img3 = img1;
     }
-    void compareSize(){
 
-    }
     ArrayList<Integer[]> compare() {
         ArrayList<Integer[]> masPoin = new ArrayList<>();
         loadImg();
@@ -59,11 +55,10 @@ public class ImageCompareProcessor {
         return masPoin;
     }
 
-    void countRminRs() {
+    void countCoefficient() {
         Integer[] p1 = new Integer[2];
         Integer[] p2 = new Integer[2];
         Integer[][] length = new Integer[massPointsDifference.size()][massPointsDifference.size()];
-        Integer[] minLengths = new Integer[length.length];
         Integer sum = 0;
         for (int i = 0; i < massPointsDifference.size(); i++) {
             arraycopy(massPointsDifference.get(i), 0, p1, 0, 2);
@@ -103,9 +98,10 @@ public class ImageCompareProcessor {
         minimumDistance = length[0][1];
     }
 
-    private void formGrup(int idPoint) {
+    private void formGroup(int idPoint) {
         ArrayList<Integer[]> m = new ArrayList<>();
-        rangeCloud = averageMinimumDistance + (averageMinimumDistance - minimumDistance) * coefficienProximityPointsInCloud;
+        Integer coefficientProximityPointsInCloud = 1;
+        Integer rangeCloud = averageMinimumDistance + (averageMinimumDistance - minimumDistance) * coefficientProximityPointsInCloud;
         for (int k = 0; k < distanceBetweenPoints.length - 1; k++) {
             if (distanceBetweenPoints[idPoint][k] < rangeCloud && !massPointsDifference.get(k).equals(new Integer[]{0,0})) {
                 m.add(massPointsDifference.get(k));
@@ -115,33 +111,33 @@ public class ImageCompareProcessor {
         group.add(m);
     }
 
-    void formAllGrup(){
+    void formAllGroup(){
         for (int k =0; k<massPointsDifference.size(); k++){
-            formGrup(k);
+            formGroup(k);
         }
     }
 
     void selectArea(){
-        Integer[] point = new Integer[2];
-        for(int k = 0; k < group.size();k++){
+        Integer[] point;
+        for (ArrayList<Integer[]> aGroup : group) {
             int top = img3.getHeight() + 1;
             int right = 0;
             int bottom = 0;
             int left = img3.getWidth() + 1;
-            for (int i = 0; i < group.get(k).size();i++){
-               point = group.get(k).get(i);
-               if(point[1] <= top){
-                   top = point[1];
-               }
-               if(point[1] >= bottom){
-                   bottom = point[1];
-               }
-               if(point[0] <= left ){
-                   left = point[0];
-               }
-               if(point[0] >= right){
-                   right = point[0];
-               }
+            for (Integer[] anAGroup : aGroup) {
+                point = anAGroup;
+                if (point[1] <= top) {
+                    top = point[1];
+                }
+                if (point[1] >= bottom) {
+                    bottom = point[1];
+                }
+                if (point[0] <= left) {
+                    left = point[0];
+                }
+                if (point[0] >= right) {
+                    right = point[0];
+                }
             }
             for (int i = left; i <= right; i++) {
                 img3.setRGB(i, top, 255);
