@@ -3,11 +3,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import static java.lang.System.arraycopy;
-import static java.lang.System.setOut;
 
-public class CompareImg {
+public class ImageCompareProcessor {
 
 
     BufferedImage img1 = null;
@@ -19,7 +17,7 @@ public class CompareImg {
     Integer rmin;
     Integer k = 1;
     Integer rg = null;
-    ArrayList<ArrayList<Integer[]>> grupp = new ArrayList<>();
+    ArrayList<ArrayList<Integer[]>> group = new ArrayList<>();
 
     ArrayList<Integer[]> compare() {
         ArrayList<Integer[]> masPoin = new ArrayList<>();
@@ -28,6 +26,7 @@ public class CompareImg {
             img2 = ImageIO.read(new File("2.png"));
 
         } catch (IOException e) {
+            System.out.println("Error reading file!");
         }
         img3 = img1;
 
@@ -114,7 +113,7 @@ public class CompareImg {
                 masPoint.set(k, new Integer[]{0, 0});
             }
         }
-        grupp.add(m);
+        group.add(m);
     }
 
     void formAllGrup(){
@@ -125,13 +124,13 @@ public class CompareImg {
 
     void selectAnArea(){
         Integer[] point = new Integer[2];
-        for(int k = 0; k < grupp.size();k++){
+        for(int k = 0; k < group.size();k++){
             int top = img3.getHeight() + 1;
             int right = 0;
             int bottom = 0;
             int left = img3.getWidth() + 1;
-            for (int i = 0; i < grupp.get(k).size();i++){
-               point = grupp.get(k).get(i);
+            for (int i = 0; i < group.get(k).size();i++){
+               point = group.get(k).get(i);
                if(point[1] <= top){
                    top = point[1];
                }
@@ -164,6 +163,7 @@ public class CompareImg {
             File outputfile = new File("saved.png");
             ImageIO.write(img3, "png", outputfile);
         } catch (IOException e) {
+            System.out.println("Error saving file");
         }
 
     }
